@@ -35,7 +35,7 @@ async def aide(ctx):
 @client.command()
 async def drive(ctx, pseudo:str, quantite, item):
     pseudoDiscord=ctx.message.author
-    reception=client.get_user("ID de la personne qui doit recevoir les commandes")
+    reception=client.get_user("pseudo de la personne qui doit recevoir les commandes")
     await ctx.message.delete()
     await ctx.send("> Votre commande à été enregistrée !",delete_after=4)
     commande="{0} --> **@{1}** ( {2} ) à commandé **{3}** de **{4}**\n".format(datetime.datetime.now().strftime("%d - %m - %Y"),pseudoDiscord,pseudo,quantite,item)
@@ -51,7 +51,7 @@ async def drive(ctx, pseudo:str, quantite, item):
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.ehlo()
         server.starttls()
-        to = 'Adresse mail du destinataire'
+        to = 'Adresse mail du\des destinataires'
         subject = 'Nouvelle commande Lidl Drive !'
         body = "Une nouvelle commande vient d'arriver le {0} !\nNom en jeu : {1}\nNom discord : @{2}\nItem : {3} de {4}".format(datetime.datetime.now().strftime("%d - %m - %Y"),pseudo,pseudoDiscord,quantite,item)
         server.login(user, login)
@@ -83,7 +83,7 @@ async def historique(ctx):
     pseudoDiscord=ctx.message.author.name
     print(pseudoDiscord)
     historiqueJoli=""
-    f = open("historique.txt","r")
+    f = open("/historique.txt","r")
     historique=[]
     lignes=f.readlines()
     f.close
@@ -99,21 +99,20 @@ async def historique(ctx):
     if historique==[]:
         await ctx.send("**Vous n'avez encore rien commandé !**")
     else:
-        await ctx.send("------------------------------------------------")
-        await ctx.send("Voici l'historique de vos commandes :")
+        await ctx.send("------------------------------------------------\nVoici l'historique de vos commandes :")
         #petit algo pour contourner le nombre max de caraactère de Discord
         for i in historique:
             antiSpamHistorique.append(i)
-            if len(antiSpamHistorique) > 3: #j'affiche uniquement les parties de l'historiques 3 par 3 pour éviter l'antiSpam
+            if len(antiSpamHistorique) > 9: #j'affiche uniquement les parties de l'historiques 10 par 10 pour éviter l'antiSpam
                 historiqueJoli=historiqueJoli.join(antiSpamHistorique)
                 await ctx.send(historiqueJoli)
                 antiSpamHistorique.clear()
                 historiqueJoli=""
 
-        historiqueJoli=historiqueJoli.join(antiSpamHistorique)
-        await ctx.send(historiqueJoli)
-        await ctx.send("Merci de votre fidélité ! ( :")
-        await ctx.send("------------------------------------------------")
+        if antiSpamHistorique != []:
+            historiqueJoli=historiqueJoli.join(antiSpamHistorique)
+            await ctx.send(historiqueJoli)
+        await ctx.send("Merci de votre fidélité ! ( :\n------------------------------------------------")
     antiSpamHistorique.clear()
     historiqueJoli=""
 
